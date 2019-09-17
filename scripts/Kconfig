@@ -87,12 +87,19 @@ choice
 		help
 		  Flyslice FX609 Card with Ethernet, 8GB DDR4 SDRAM and Xilinx VU9P FPGA.
 
-        config AD9V3
-                bool "CAPI2.0: AlphaData AD9V3 with 2x100GbE, 8GB DDR4 SDRAM and Xilinx VU3P-2 FPGA"
-                select CAPI20
-                select DISABLE_NVME
-                help
-                  AlphaData AD9V3 with 2x100GbE, 8GB DDR4 SDRAM and Xilinx VU3P-2 FPGA in CAPI2.0 mode
+  config AD9V3
+    bool "CAPI2.0: AlphaData AD9V3 with 2x100GbE, 8GB DDR4 SDRAM and Xilinx VU3P-2 FPGA"
+    select CAPI20
+    select DISABLE_NVME
+    help
+      AlphaData AD9V3 with 2x100GbE, 8GB DDR4 SDRAM and Xilinx VU3P-2 FPGA in CAPI2.0 mode
+
+  config AD9H7
+    bool "CAPI2.0: AlphaData AD9H7 and Xilinx VU37P FPGA"
+    select CAPI20
+    select DISABLE_NVME
+    help
+      AlphaData AD9H7 and Xilinx VU37P FPGA in CAPI2.0 mode
 
 endchoice
 
@@ -107,25 +114,26 @@ config FPGACARD
 	default "FX609"  if FX609
 	default "S241"   if S241
 	default "U200"   if U200
-        default "AD9V3"  if AD9V3
+  default "AD9V3"  if AD9V3
+  default "AD9H7"  if AD9H7
 
 config FLASH_INTERFACE
 	string
 	default "BPIx16" if S121B_BPIx16 || N250S || N250SP || ADKU3 || AD8K5
 	default "SPIx4"  if S121B_SPIx4 || FX609 || S241 || U200
-	default "SPIx8"  if RCXVUP || AD9V3
+	default "SPIx8"  if RCXVUP || AD9V3 || AD9H7
 
 #FLASH_SIZE: in MB, will be used by build_mcs.tcl
 config FLASH_SIZE
 	string
 	default 256 if S121B_SPIx4  || RCXVUP || S241
 	default 128 if S121B_BPIx16 || N250SP || AD8K5 || ADKU3 || FX609 || U200
-	default 64  if N250S || AD9V3
+	default 64  if N250S || AD9V3 || AD9H7
 
 #FLASH_FACTORYADDR: For all cards, factory address is 0x0
 config FLASH_FACTORYADDR
-        string
-        default 0x00000000
+  string
+  default 0x00000000
 
 #FLASH_USERADDR: For BPIx16, it is two-bytes address;
 #                For SPI, it is byte address.
@@ -134,7 +142,7 @@ config FLASH_USERADDR
 	default 0x01000000 if N250S || ADKU3
 	default 0x02000000 if S121B_BPIx16 || AD8K5 || N250SP || AD9V3
 	default 0x04000000 if FX609
-	default 0x08000000 if S121B_SPIx4 || RCXVUP || S241
+	default 0x08000000 if S121B_SPIx4 || RCXVUP || S241 || AD9H7
 	default 0x01002000 if U200
 
 
@@ -161,10 +169,11 @@ config FPGACHIP
 	default "xcvu9p-flgb2104-2l-e" if S241
 	default "xcvu3p-ffvc1517-2-i"  if AD9V3
 	default "xcu200-fsgd2104-2-e"  if U200
+	default "xcvu37p-fsvh2892-2-e"  if AD9H7
 
 config FPGABOARD
 	string
-	default "xilinx.com:au200:part0:1.0" if U200 
+	default "xilinx.com:au200:part0:1.0" if U200
 
 config NUM_OF_ACTIONS
 	int
@@ -313,7 +322,7 @@ choice
 		select ENABLE_HLS_SUPPORT
 		select DISABLE_SDRAM_AND_BRAM
 		select DISABLE_NVME
-	
+
 	config HLS_MM_TEST
 		bool "HLS WED/STATUS Sharing and MatrixMultiply"
 		help
@@ -344,17 +353,17 @@ choice
 	config HLS_SCATTER_GATHER
 		bool "HLS Scatter Gather (CAPI2.0 only)"
 		help
-		  This example will help user understanding how to optimize code for 
-		   scatter gather memory access. It will show how Software and Hardware 
+		  This example will help user understanding how to optimize code for
+		   scatter gather memory access. It will show how Software and Hardware
 		   share WED (Work Element Descriptor) and STATUS in host memory.
-		  This can be used as a benchmark to see how CAPI help reduce the 
+		  This can be used as a benchmark to see how CAPI help reduce the
 		   data moving latency when the data are scattered everywhere in RAM.
 		  This example is written in C and compiled with HLS
 		select ENABLE_HLS_SUPPORT
 		select DISABLE_SDRAM_AND_BRAM
 		select DISABLE_NVME
 		select ENABLE_ACTION_CLK_DERATE
-	
+
     config HLS_VECTOR_GENERATOR
 		bool "HLS Vector Generator example"
         help
@@ -405,7 +414,7 @@ config ENABLE_SDRAM
 	  This option enables the on-card SDRAM.
 	  SNAP supports 8GB DDR3 SDRAM on the AlphaData KU3 card,
 	                4GB DDR4 SDRAM on the Nallatech 250S card,
-			4GB DDR4 SDRAM on the Nallatech 250S+ card,
+									4GB DDR4 SDRAM on the Nallatech 250S+ card,
 	                8GB DDR4 SDRAM on the Semptian NSA121B card,
 	                8GB DDR4 SDRAM on the AlphaData 8K5 card
 	                8GB DDR4 SDRAM on the Semptian NSA241 card
@@ -581,7 +590,7 @@ config ENABLE_USER_HLS_ACTION_CLK
 	  Default clock is 250MHz (4ns).
 	  By changing the value of the HLS action clock, user can
 	  overconstrain the HLS synthesis and get different synthesis results.
-	  This option enables or disables in the file snap_env.sh the use of 
+	  This option enables or disables in the file snap_env.sh the use of
           the variable HLS_CLOCK_PERIOD_CONSTRAINT="4ns"
 	  This modification will not change the frequency used to synthesize the
           whole FPGA, but will disable the automatic timing violation testing done

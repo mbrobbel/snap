@@ -137,6 +137,7 @@ struct card_2_name snap_card_2_name_tab[] = {
 	{.card_id = FX609_CARD,  .card_name = "FX609"},
 	{.card_id = S241_CARD,   .card_name = "S241"},
 	{.card_id = AD9V3_CARD,  .card_name = "AD9V3"},
+	{.card_id = AD9H7_CARD,  .card_name = "AD9H7"},
 	{.card_id = U200_CARD,  .card_name = "U200"},
 	{.card_id = -1,          .card_name = "INVALID"}
 };
@@ -549,7 +550,7 @@ static struct snap_action *hw_attach_action(struct snap_card *card,
 		/* Short Action Type and Direct Access */
 		hw_snap_mmio_write64(card, SNAP_S_CCR, data);
 		card->start_attach = true;
-		card->attach_timeout_sec = timeout_sec; /* Save timeout */ 
+		card->attach_timeout_sec = timeout_sec; /* Save timeout */
 	}
 
 	if (card->start_attach) {
@@ -646,7 +647,7 @@ static int hw_card_ioctl(struct snap_card *card, unsigned int cmd, unsigned long
 	if (NULL == arg) {
 		snap_trace("  %s Error Missing parm\n", __func__);
 		return -1;
-	}	
+	}
 	switch (cmd) {
 	case GET_CARD_TYPE:
 		rc_val = (unsigned long)(card->cap_reg & 0xff);
@@ -676,7 +677,7 @@ static int hw_card_ioctl(struct snap_card *card, unsigned int cmd, unsigned long
 		break;
 	case GET_DMA_MIN_SIZE:
 		/* Minimum size for DMA transfers to/from Host */
-		/* Value t means that minimum transfer size is 2^t B */ 
+		/* Value t means that minimum transfer size is 2^t B */
 		rc_val = (unsigned long)(card->cap_reg >> 36)&0xf;   /* Get Bits 36 .. 39 */
 		rc_val = 1 << rc_val;
 		snap_trace("  %s Get DMA Min Size: %d Bytes\n", __func__, (int)rc_val);
@@ -989,7 +990,7 @@ int snap_action_sync_execute_job_set_regs(struct snap_action *action,
 
 	snap_trace("    win_size: %d wout_size: %d mmio_in: %d mmio_out: %d\n",
 		cjob->win_size, cjob->wout_size, mmio_in, mmio_out);
-	
+
 	job.short_action = card->sat;/* Set correct Value after attach */
 	job.seq = card->seq++; /* Set correct Value after attach */
 
@@ -1134,7 +1135,7 @@ int snap_action_sync_execute_job(struct snap_action *action,
 	snap_action_start(action);
 
 	/* Wait for finish */
-	rc = snap_action_sync_execute_job_check_completion(action, cjob, 
+	rc = snap_action_sync_execute_job_check_completion(action, cjob,
 				timeout_sec);
 	return rc;
 }
@@ -1231,7 +1232,7 @@ static void *sw_card_alloc_dev(const char *path __unused,
 	dn->priv = NULL;
 	dn->vendor_id = vendor_id;
 	dn->device_id = device_id;
-	dn->name = snap_card_id_2_name(vendor_id); /* Makes invalid name */ 
+	dn->name = snap_card_id_2_name(vendor_id); /* Makes invalid name */
 	return (struct snap_card *)dn;
 
  __snap_alloc_err:

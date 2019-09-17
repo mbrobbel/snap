@@ -73,10 +73,10 @@ Address map for context n (0 <= n < 512), and with s = 512:
 
 ## SNAP Framework Register Specifications
 
-RW  = Read/Write  
-RO  = Read only - Reserved bits return 0 unless specified otherwise  
-RC  = Read only with clear on read  
-RWC = Read/WriteClear (Write clears (=>0) the bits for each bit=1 in the write value)  
+RW  = Read/Write
+RO  = Read only - Reserved bits return 0 unless specified otherwise
+RC  = Read only with clear on read
+RWC = Read/WriteClear (Write clears (=>0) the bits for each bit=1 in the write value)
 RWS = Read/WriteSet   (Write sets (=>1) the bits for each bit=1 in the write value)
 
 n = Context Handle (aka. Process ID; 0 <= n < number of processes)
@@ -193,6 +193,7 @@ Address: 0x0000030
   15..9  RO: Reserved
       8  RO: NVMe enabled
    7..0  RO: Card type:
+             0x16 : AD9H7
              0x13 : S241
              0x12 : FX609
              0x11 : RCXVUP
@@ -516,6 +517,7 @@ Address: 0x0000030 + (s+n) * 0x0010000
   15..9  RO: Reserved
       8  RO: NVMe enabled
    7..0  RO: Card type:
+             0x16 : A9H7
              0x11 : RCXVUP
              0x10 : N250SP
              0x03 : AD8K5
@@ -901,7 +903,7 @@ Each action has a 4KB MMIO space which can be accessed from a master context or
 from a slave context using the address ranges as described in the respective
 MMIO-Map above.
 
-The following MMIO registers have dedicated meanings within the SNAP framework.  
+The following MMIO registers have dedicated meanings within the SNAP framework.
 When the Action gets created using Xilinx HLS the registers marked as "Reserved"
 are required for HLS control information. Otherwise, they may be used for any purpose.
 ```
@@ -916,7 +918,7 @@ are required for HLS control information. Otherwise, they may be used for any pu
 0x014    |  Action Version  |    RO
          ====================
 0x018    |     Reserved     |
-0x01C    |                  | 
+0x01C    |                  |
          ====================
 0x020    |    Context ID    |    WO
          ====================
@@ -928,13 +930,13 @@ are required for HLS control information. Otherwise, they may be used for any pu
          ====================
 0x100    |  Request Queue   |
  ...     |     element      |    WO
-0x178    |                  |        
+0x178    |                  |
          ====================
 0x17C    |     Reserved     |
          ====================
 0x180    |  Response Queue  |
  ...     |     element      |    RO
-0x1F8    |                  |        
+0x1F8    |                  |
          ====================
 0x1FC    |     Reserved     |
          ====================

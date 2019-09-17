@@ -8,7 +8,7 @@ The framework hardware consists of a AXI-to-CAPI bridge unit, memory-mapped regi
 It interfaces with a user-written action (a.k.a. kernel) through an AXI-lite control interface, and gives coherent access to host memory through AXI. Optionally, it also provides access to the on-card DRAM via AXI.
 A NVMe host controller-AXI bridge complements the framework for storage or database applications as an independent unit.
 Software gets access to the action through the libsnap library, allowing applications to call a "function" instead of programming an accelerator.
-The framework supports multi-process applications and can be extended to support multiple instantiated hardware actions in parallel.  
+The framework supports multi-process applications and can be extended to support multiple instantiated hardware actions in parallel.
 **Note:** The current 1.x releases support a single action per FPGA.
 
 This project is an initiative of the OpenPOWER Foundation Accelerator Workgroup.
@@ -17,24 +17,24 @@ Please see here for more details:
 * http://openpowerfoundation.org/blogs/capi-drives-business-performance/
 
 ## What is CAPI, education materials and more information
-* CAPI and SNAP on IBM developerworks: https://developer.ibm.com/linuxonpower/capi/  
+* CAPI and SNAP on IBM developerworks: https://developer.ibm.com/linuxonpower/capi/
 * [IBM Developerworks Forum, tag CAPI_SNAP (to get support)](https://developer.ibm.com/answers/smartspace/capi-snap/index.html)
 * [Education Videos](https://developer.ibm.com/linuxonpower/capi/education/)
 
 ## Status
-Currently the SNAP Framework supports CAPI1.0 on POWER8 based hosts and CAPI2.0 on POWER9 based hosts. A similar OpenCAPI SNAP framework is going to be added in a new repository. Users working on SNAP today can easily transfer their CAPI1.0 work to CAPI2.0 or OpenCAPI as the interface for "**Software Program**" and "**Hardware Action**" (shown in the yellow areas of the above figure) will stay the same. 
+Currently the SNAP Framework supports CAPI1.0 on POWER8 based hosts and CAPI2.0 on POWER9 based hosts. A similar OpenCAPI SNAP framework is going to be added in a new repository. Users working on SNAP today can easily transfer their CAPI1.0 work to CAPI2.0 or OpenCAPI as the interface for "**Software Program**" and "**Hardware Action**" (shown in the yellow areas of the above figure) will stay the same.
 
 # 2. A 3 steps process
 Developing an FPGA accelerated application on SNAP can be done following the steps listed below, but this sequence is not mandatory.
 
-* **Preparation**: Decide the software function to be moved to FPGA. This function, usually computation intensive, is named as "action" in the following description. 
+* **Preparation**: Decide the software function to be moved to FPGA. This function, usually computation intensive, is named as "action" in the following description.
 
-* **Step1**. Put the action code into a separate function in the main software code, and determine the function parameters required. Add the few libsnap API functions that required to set up CAPI to the main software. The best way is to start from an example (See in [actions](./actions)) and read the code within the "sw" directory. 
+* **Step1**. Put the action code into a separate function in the main software code, and determine the function parameters required. Add the few libsnap API functions that required to set up CAPI to the main software. The best way is to start from an example (See in [actions](./actions)) and read the code within the "sw" directory.
 
-* **Step2**. Write the "hardware action" in a supported programming language, such as Vivado HLS or Verilog/VHDL. For **HLS**, developers can write their algorithms in C/C++ syntax within an function wrapper "hls_action()". Developers who prefer **HDL(Verilog/VHDL)**, can use their adapted version of "action_wrapper.vhd" as top-level. It includes several AXI master interfaces and one AXI-lite slave interface. Refer to the "hw" directory in "hls_\*" or "hdl_\*" for action examples.  
-For **simulation** of the hardware action, the PSLSE (**P**ower **S**ervice **L**ayer **S**imulation **E**ngine) provides a software emulation of the whole path from **libcxl** library to the **P**ower **S**ervice **L**ayer (see the blue boxes in the picture above). This allows for simulating the action without access to an FPGA card or a POWER system. When the simulation is successful, you are ready to **generate the FPGA bitstream**. 
+* **Step2**. Write the "hardware action" in a supported programming language, such as Vivado HLS or Verilog/VHDL. For **HLS**, developers can write their algorithms in C/C++ syntax within an function wrapper "hls_action()". Developers who prefer **HDL(Verilog/VHDL)**, can use their adapted version of "action_wrapper.vhd" as top-level. It includes several AXI master interfaces and one AXI-lite slave interface. Refer to the "hw" directory in "hls_\*" or "hdl_\*" for action examples.
+For **simulation** of the hardware action, the PSLSE (**P**ower **S**ervice **L**ayer **S**imulation **E**ngine) provides a software emulation of the whole path from **libcxl** library to the **P**ower **S**ervice **L**ayer (see the blue boxes in the picture above). This allows for simulating the action without access to an FPGA card or a POWER system. When the simulation is successful, you are ready to **generate the FPGA bitstream**.
 **Note** : there is no need to build a specific testbench to test your application in FPGA. This is a key advantage as your code is the testbench.
-Please read the [hardware/README.md](hardware/README.md) for more details. 
+Please read the [hardware/README.md](hardware/README.md) for more details.
 
 * **Step3**. Program the bitstream to a real FPGA card plugged into a **POWER or OpenPOWER** machine and run your calling software from it. This step is also called **Deployment**.
 Please see [Bitstream_flashing.md](hardware/doc/Bitstream_flashing.md) for instructions on how to program the FPGA bitstream.
@@ -57,9 +57,10 @@ As of now, the following FPGA cards can be used with SNAP if they contain CAPI l
   * Semptian NSA241 http://www.semptian.com/proinfo/126.html
   * ReflexCES XpressVUP LP9P https://www.reflexces.com/products-solutions/other-cots-boards/xilinx/xpressvup
   * Alpha-Data ADM-PCIE-9V3 https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9v3
+  * Alpha-Data ADM-PCIE-9H7 https://www.alpha-data.com/dcp/products.php?product=adm-pcie-9h7
 
 ## 3.2 Development (Step1 & Step2)
-Development is usually done on a **Linux (x86) computer** since as of now, Xilinx Vivado Design Suite is supported only on this platform. 
+Development is usually done on a **Linux (x86) computer** since as of now, Xilinx Vivado Design Suite is supported only on this platform.
 See examples of [supported development configurations](./doc#p8-development-environments-).
 The required tools and packages are listed below. Web access to github is recommended to follow the build instructions. A real FPGA card is not required for the plain hardware development.
 
@@ -80,7 +81,7 @@ The `ncurses` library must be installed to use the menu-driven user interface fo
 
 Please see [Image and model build](hardware/README.md#image-and-model-build) for more information on the build process.
 
-### (d) Download the PSL Engine for Simulation: the "POWER + FPGA" emulation box 
+### (d) Download the PSL Engine for Simulation: the "POWER + FPGA" emulation box
 For simulation, SNAP relies on the `xterm` program and on the PSL Simulation Environment (PSLSE) which is free and available on github
 
 https://github.com/ibm-capi/pslse
@@ -95,15 +96,15 @@ Deployment is on a **Power** or **OpenPower server** with a **CAPI programmed FP
 See examples of [supported deployment configurations](doc/README.md#deployment-environments-).
 
 ### (a) Install CAPI accelerator library
-This code uses **libcxl** to access the CAPI hardware. Install it with the package manager of your Linux distribution, e.g. 
-`sudo apt-get install libcxl-dev` for Ubuntu, or `sudo yum install libcxl-devel` for RHEL.  
+This code uses **libcxl** to access the CAPI hardware. Install it with the package manager of your Linux distribution, e.g.
+`sudo apt-get install libcxl-dev` for Ubuntu, or `sudo yum install libcxl-devel` for RHEL.
 For more information, please see https://github.com/ibm-capi/libcxl
 
 ### (b) Install CAPI programmation tool
 SNAP uses the generic program `capi-flash-script` to upload FPGA code/bitstreams into the CAPI FPGA cards. This can be downloaded from https://github.com/ibm-capi/capi-utils. This tool can be used **ONLY** if a CAPI image has already been put once in the FPGA. If not, please follow [instructions](hardware/doc/Bitstream_flashing.md#initial-programming-of-a-blank-or-bricked-card) to program any FPGA card to be recognized as a **CAPI card** or ask help from [CAPI support](https://developer.ibm.com/answers/smartspace/capi-snap/index.html).
 
 # 4. Contributing
-This is an open-source project. We greatly appreciate your contributions and collaboration. 
+This is an open-source project. We greatly appreciate your contributions and collaboration.
 Before contributing to this project, please read and agree to the rules in
 * [CONTRIBUTING.md](CONTRIBUTING.md)
 
